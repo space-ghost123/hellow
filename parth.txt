@@ -1,0 +1,139 @@
+import numpy as np		 
+import matplotlib.pyplot as plt	 #for ploting or visual representation of data
+
+def draw(p,color='blue'):
+    for i in range(len(p)):
+        plt.plot([p[i][0],p[(i+1)%len(p)][0]],[p[i][1],p[(i+1)%len(p)][1]],c=color)
+
+def Bline(x1,y1,x2,y2):
+    dx,dy=(x2-x1),(y2-y1)
+    M=abs(dy/(dx if dx!=0 else 1))
+    # print(M)
+    x,y=x1,y1
+
+    xinc=(0 if dx==0 else (1 if dx>0 else -1))
+    yinc=(0 if dy==0 else (1 if dy>0 else -1))
+    # print(xinc,yinc)
+
+    dx,dy=abs(dx),abs(dy)
+
+    X,Y=[x],[y]
+    P=2*dy-dx
+    print(dx,dy,P)
+
+    for i in range(0,max(dx,dy)):
+        if P>=0:
+            y+=yinc
+            P+=2*(dy-dx)
+        else:
+            P+=2*dy
+        x+=xinc
+        X.append(x)
+        Y.append(y)
+
+    print(X)
+    print(Y)
+
+    plt.plot(X,Y,color='red')
+
+def mid_cirle(x1,y1,r):
+    x,y=0,r
+    P=1-r
+    X,Y=[],[]
+    while (x<=y):
+
+        X.append(x)
+        Y.append(y)
+
+        # x+=1
+        if P<=0: P+=2*x+3
+        else:
+            y-=1
+            P+=2*(x-y)+5
+        x+=1
+    return np.array(list(zip(X,Y)))
+
+def plot_point(x,y,oct,color='blue'):
+    # plt.scatter(x,y,color='red')
+
+    plt.plot(x+oct[:,0],y+oct[:,1],color=color)
+    plt.plot(x+oct[:,1],y+oct[:,0],color=color)
+    plt.plot(x+oct[:,1],y-oct[:,0],color=color)
+    plt.plot(x+oct[:,0],y-oct[:,1],color=color)
+    plt.plot(x-oct[:,0],y-oct[:,1],color=color)
+    plt.plot(x-oct[:,1],y-oct[:,0],color=color)
+    plt.plot(x-oct[:,1],y+oct[:,0],color=color)
+    plt.plot(x-oct[:,0],y+oct[:,1],color=color)
+
+def draw_circle(x,y,r,color='blue'):
+    oct=mid_cirle(x,y,r)
+    plot_point(x,y,oct,color=color)
+
+sin=lambda x: np.sin(x*np.pi/180)
+cos=lambda x: np.cos(x*np.pi/180)
+
+def rotate(points,angle):
+    rotation_mat=np.array([[cos(angle),-sin(angle)],[sin(angle),cos(angle)]])
+    return np.dot(points,rotation_mat)
+
+def scaling(points,sx,sy):
+    scale_mat=np.array([[sx,0],[0,sy]])
+    return np.dot(points,scale_mat)
+
+def shearing(points,shx,shy):
+        shear_mat=np.array([[1,shy],[shx,1]])
+        return np.dot(points,shear_mat)
+
+# orignal image
+field=np.array([[0,0],[300,0],[300,150],[0,150],[0,0],[150,0],[150,150],[0,150]])
+left_s_goal=np.array([[0,70],[20,70],[20,90],[0,90]])
+left_b_goal=np.array([[0,50],[40,50],[40,110],[0,110]])
+left_small=np.array([[0,75],[-5,75],[-5,85],[0,85]])
+
+right_s_goal=np.array([[300,70],[280,70],[280,90],[300,90]])
+right_b_goal=np.array([[300,50],[260,50],[260,110],[300,110]])
+right_small=np.array([[300,75],[305,75],[305,85],[300,85]])
+
+
+draw(field,color="green")
+draw(left_s_goal,color="green")
+draw(left_b_goal,color="green")
+draw(left_small,color="green")
+
+draw(right_s_goal,color="green")
+draw(right_b_goal,color="green")
+draw(right_small,color="green")
+draw_circle(150,75,35, color="green")
+
+
+
+# rotate image
+field=np.array([[0,0],[300,0],[300,150],[0,150],[0,0],[150,0],[150,150],[0,150]])
+left_s_goal=np.array([[0,70],[20,70],[20,90],[0,90]])
+left_b_goal=np.array([[0,50],[40,50],[40,110],[0,110]])
+left_small=np.array([[0,75],[-5,75],[-5,85],[0,85]])
+
+right_s_goal=np.array([[300,70],[280,70],[280,90],[300,90]])
+right_b_goal=np.array([[300,50],[260,50],[260,110],[300,110]])
+right_small=np.array([[300,75],[305,75],[305,85],[300,85]])
+
+angle=-45
+
+field=rotate(field,angle)
+left_s_goal=rotate(left_s_goal,angle)
+left_b_goal=rotate(left_b_goal,angle)
+left_small=rotate(left_small,angle)
+
+right_s_goal=rotate(right_s_goal,angle)
+right_b_goal=rotate(right_b_goal,angle)
+right_small=rotate(right_small,angle)
+
+draw(field,color="green")
+draw(left_s_goal,color="green")
+draw(left_b_goal,color="green")
+draw(left_small,color="green")
+
+draw(right_s_goal,color="green")
+draw(right_b_goal,color="green")
+draw(right_small,color="green")
+draw_circle(50,165,35, color="green")
